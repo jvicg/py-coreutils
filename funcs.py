@@ -2,6 +2,11 @@
 # file with funcs used in the rest of scripts
 
 import os
+import subprocess
+
+# method to print program usage
+def print_usage():
+    print("USAGE: mvv3 [ --copy | -c | --move | -m ] [ SOURCES ] [ DESTINATION ]")
 
 # method to get size in MB of a given file
 def get_filesize(f) -> int:
@@ -22,3 +27,12 @@ def get_size(f) -> int:
         return get_dirsize(f)
     elif os.path.isfile(f):
         return get_filesize(f)
+
+# method to run a command handling possible errors
+def run(command):
+    try:
+        subprocess.run(command, text=True, check=True)
+    except subprocess.CalledProcessError as e:
+        return ("STDERR", e.stderr)
+    except Exception as e:
+        return ("ERROR:", e)
