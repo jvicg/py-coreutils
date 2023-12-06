@@ -1,18 +1,17 @@
-# funcs.py
+# py-coreutils/funcs.py
 # file with funcs used in the rest of scripts
 
 import os
 import subprocess
 
-# method to print program usage
-def print_usage():
-    print("USAGE: mvv3 [ --copy | -c | --move | -m ] [ SOURCES ] [ DESTINATION ]")
+# methods to print usage
+def print_mvv3_usage():
+    print("USAGE: mvv3 --move | -m | --copy | -c SOURCE/s DESTINATION")
 
-# method to get size in MB of a given file
+# methods to get the size given file (will assume valid files/dirs are passed)
 def get_filesize(f) -> int:
-    return os.path.getsize(f)/(1024**2) # it will return the size in MB
+    return os.path.getsize(f)/(1024**2) # convert bytes to megabytes
 
-# method to get the size in MB of a given dir
 def get_dirsize(d) -> int:
     dir_size = 0
     for root, dirs, files in os.walk(d):
@@ -21,18 +20,23 @@ def get_dirsize(d) -> int:
             dir_size += get_filesize(full_file_path)
     return dir_size
 
-# method to get the size of in MB of a dir or a file
 def get_size(f) -> int:
     if os.path.isdir(f):
         return get_dirsize(f)
     elif os.path.isfile(f):
         return get_filesize(f)
 
-# method to run a command handling possible errors
+# method to remove separator (/) from the end of a directory name
+def get_basename(f) -> str:
+    return f.rstrip(os.path.sep)
+
+
+# method to run a command - handling possible errors
 def run(command):
     try:
         subprocess.run(command, text=True, check=True)
     except subprocess.CalledProcessError as e:
-        return ("STDERR", e.stderr)
+        print("ERROR", e)
+        print("STDERR", e.stderr)
     except Exception as e:
-        return ("ERROR:", e)
+        print("ERROR:", e)
