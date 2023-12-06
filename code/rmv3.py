@@ -14,7 +14,7 @@ TRASH_DIR = os.path.join(HOME_DIR, ".trash")
 
 # handle time to name trash files
 now = datetime.now()
-date = now.strftime("%d-%b-%Y-%T") + ".trash"
+date = now.strftime("-%d-%b-%Y-%T") + ".trash"
 
 # create trash dir if didnt exists
 if not os.path.isdir(TRASH_DIR):
@@ -44,7 +44,12 @@ for f in args.files:
 
     # files
     if os.path.isfile(f):
-        funcs.to_trash(f)
+        if delete:
+            funcs.delete(f)
+        else:
+            f_basename = funcs.get_basename(f)
+            destination = os.path.join(TRASH_DIR, f_basename + date)
+            funcs.to_trash(f, destination)
     # dirs
     elif os.path.isdir(f):
         if not recursive:
@@ -52,7 +57,7 @@ for f in args.files:
             sys.exit(1)
         elif not delete:
             dir_name = funcs.get_basename(f)
-            destination = os.path.join(TRASH_DIR, dir_name + "-" + date)
+            destination = os.path.join(TRASH_DIR, dir_name + date)
             funcs.to_trash(dir_name, destination)
         else:
             funcs.delete(f)

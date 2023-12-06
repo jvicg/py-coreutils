@@ -28,7 +28,7 @@ def get_size(f) -> int:
 
 # method to remove separator (/) from the end of a directory name
 def get_basename(f) -> str:
-    return f.rstrip(os.path.sep)
+    return os.path.basename(f.rstrip(os.path.sep))
 
 
 # method to run a command - handling possible errors
@@ -37,14 +37,15 @@ def run(command):
         subprocess.run(command, text=True, check=True)
     except subprocess.CalledProcessError as e:
         print("ERROR", e)
-        print("STDERR", e.stderr)
     except Exception as e:
         print("ERROR:", e)
 
+# method to delete files
 def delete(f):
     command = ["/bin/rm", "-rf", f]
     run(command)
 
+# method to move files to trash
 def to_trash(f, trash_path):
     command = ["/bin/mv", f, trash_path]
     run(command)
