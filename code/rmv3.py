@@ -44,7 +44,7 @@ for f in args.files:
 
     # files
     if os.path.isfile(f):
-        funcs.delete(f)
+        funcs.to_trash(f)
     # dirs
     elif os.path.isdir(f):
         if not recursive:
