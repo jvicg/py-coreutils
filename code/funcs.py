@@ -41,11 +41,12 @@ def run(command):
         print("ERROR:", e)
 
 # method to delete files
-def delete(f):
-    command = ["/bin/rm", "-rf", f]
+def delete(f, verbose=False):
+    command = ["/bin/rm", "-rf"]
     run(command)
+    if verbose: print(f"rmv3: deleting -> '{f}'")
 
 # method to move files to trash
-def to_trash(f, trash_path):
-    command = ["/bin/mv", f, trash_path]
-    run(command)
+def to_trash(f, trash_path, verbose=False):
+    os.rename(f, trash_path)
+    if verbose: print(f"rmv3: moving '{f}' -> {trash_path}")
