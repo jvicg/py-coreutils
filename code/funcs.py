@@ -40,3 +40,11 @@ def run(command):
         print("STDERR", e.stderr)
     except Exception as e:
         print("ERROR:", e)
+
+def delete(f):
+    command = ["/bin/rm", "-rf", f]
+    run(command)
+
+def to_trash(f, trash_path):
+    command = ["/bin/mv", f, trash_path]
+    run(command)

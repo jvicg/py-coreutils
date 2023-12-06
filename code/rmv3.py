@@ -38,32 +38,27 @@ args = parser.parse_args()        # store arguments in a variable
 recursive = args.recursive        # true if recursive flag was selected
 force = args.force                # force flag
 delete = args.delete              # delete flag
-files = []                        # list with the given files and directories
 
-# check that files are valid
+# execution of the program
 for f in args.files:
+
+    # files
     if os.path.isfile(f):
-        files.append(f)
+        funcs.delete(f)
+    # dirs
     elif os.path.isdir(f):
         if not recursive:
             print(f'rmv3: error: {f} is a directory')
             sys.exit(1)
+        elif not delete:
+            dir_name = funcs.get_basename(f)
+            destination = os.path.join(TRASH_DIR, dir_name + "-" + date)
+            funcs.to_trash(dir_name, destination)
         else:
-            files.append(funcs.get_basename(f))
+            funcs.delete(f)
+    # error handling
     else:
         print(f"rmv3: error: '{f}' is not a valid file or directory")
         sys.exit(1)
-
-# execute the commands
-for f in files:
-
-    if delete:
-        command = ["/bin/rm", "-rf", f]
-        funcs.run(command)
-    else:
-        # files will be renamed with the format filename-date.trash
-        destination = os.path.join(TRASH_DIR, f + "-" + date)
-        command = ["/bin/mv", f, destination]
-        funcs.run(command)
 
 sys.exit(0)
