@@ -26,10 +26,9 @@ def get_size(f) -> int:
     elif os.path.isfile(f):
         return get_filesize(f)
 
-# method to remove separator (/) from the end of a directory name
+# method to remove separator (/) from the end of a directory name and get basename instead of full path
 def get_basename(f) -> str:
     return os.path.basename(f.rstrip(os.path.sep))
-
 
 # method to run a command - handling possible errors
 def run(command):

@@ -19,11 +19,11 @@ now = datetime.now()                          # start clock
 DATE = now.strftime("-%d-%b-%Y-%T")           # date as string
 TRASH_FORMAT = DATE + TRASH                   # add TRASH extension - format: {filename}-{date}.{TRASH}
 
-# create trash dir if dont exists
+# create trash dir if doesn't exist
 if not os.path.isdir(TRASH_DIR): os.makedirs(TRASH_DIR)
 
 # program definition
-parser = argparse.ArgumentParser(
+parser = argparse.ArgumentParser(      # container for arguments specifications (object of type ArgumentParser)
     prog="rmv3",
     description='rmv3 - simple script to remove or move files to TRASH',
     epilog = "py-coreutils/rmv3 - script part of the repo: github.com/nrk19/py-coreutils")
@@ -56,11 +56,11 @@ parser.add_argument(
     metavar="file",
     help='files/dirs to be removed')
 
-args = parser.parse_args()        # arg object
-verbose = args.verbose            # verbose
-recursive = args.recursive        # true if recursive flag was selected
-force = args.force                # force flag
-delete = args.delete              # delete flag
+args = parser.parse_args()              # arg object (type: argparse.Namespace)
+verbose: bool = args.verbose            # verbose flag
+recursive: bool = args.recursive        # recursive flag
+force: bool = args.force                # force flag
+delete: bool = args.delete              # delete flag
 
 # execution of the program
 for f in args.files:
