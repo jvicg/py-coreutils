@@ -5,28 +5,28 @@
 
 import os
 import sys
-import funcs
+import funcs                                  # file with local functions
+import globvars                               # file that stores program global variables
 import argparse
 import subprocess
 from datetime import datetime
 
-HOME_DIR = os.path.expanduser('~')            # home directory
-TRASH = ".trash"                              # name of the trash directory (modify if u wish)
-TRASH_DIR = os.path.join(HOME_DIR, TRASH)     # trash path
+# TODO: implement flag to change default TRASH_DIR
 
 # handle file naming
 now = datetime.now()                          # start clock
 DATE = now.strftime("-%d-%b-%Y-%T")           # date as string
-TRASH_FORMAT = DATE + TRASH                   # add TRASH extension - format: {filename}-{date}.{TRASH}
-
-# create trash dir if doesn't exist
-if not os.path.isdir(TRASH_DIR): os.makedirs(TRASH_DIR)
+TRASH_FORMAT = DATE + globvars.TRASH          # add TRASH extension - format: {filename}-{date}.{TRASH}
 
 # program definition
-parser = argparse.ArgumentParser(      # container for arguments specifications (object of type ArgumentParser)
-    prog="rmv3",
-    description='rmv3 - simple script to remove or move files to TRASH',
-    epilog = "py-coreutils/rmv3 - script part of the repo: github.com/nrk19/py-coreutils")
+PROG_NAME = "rmv3"
+PROG_DEFINITION = f"{PROG_NAME} - simple script to remove or move files to TRASH"
+PROG_EPILOG = f"{globvars.PROJECT_NAME}/{PROG_NAME} - script part of the repo: {globvars.PROJECT_URL}"
+
+parser = argparse.ArgumentParser(      # container for arguments specifications (object type: ArgumentParser)
+    prog=PROG_NAME,
+    description=PROG_DEFINITION,
+    epilog=PROG_EPILOG)
 
 # arguments - flags
 parser.add_argument(
@@ -56,11 +56,14 @@ parser.add_argument(
     metavar="file",
     help='files/dirs to be removed')
 
-args = parser.parse_args()              # arg object (type: argparse.Namespace)
+args = parser.parse_args()              # arg object (type: Namespace)
 verbose: bool = args.verbose            # verbose flag
 recursive: bool = args.recursive        # recursive flag
 force: bool = args.force                # force flag
 delete: bool = args.delete              # delete flag
+
+# create trash dir if doesn't exist
+if not os.path.isdir(globvars.TRASH_DIR): os.makedirs(globvars.TRASH_DIR)
 
 # execution of the program
 for f in args.files:
@@ -70,7 +73,7 @@ for f in args.files:
             funcs.delete(f, verbose)
         else:
             f_basename = funcs.get_basename(f)
-            destination = os.path.join(TRASH_DIR, f_basename + TRASH_FORMAT)
+            destination = os.path.join(globvars.TRASH_DIR, f_basename + TRASH_FORMAT)
             funcs.to_trash(f, destination, verbose)
     # dirs
     elif os.path.isdir(f):
@@ -79,7 +82,7 @@ for f in args.files:
             sys.exit(1)
         elif not delete:
             dir_name = funcs.get_basename(f)
-            destination = os.path.join(TRASH_DIR, dir_name + TRASH_FORMAT)
+            destination = os.path.join(globvars.TRASH_DIR, dir_name + TRASH_FORMAT)
             funcs.to_trash(dir_name, destination, verbose)
         else:
             funcs.delete(f, verbose)
@@ -88,4 +91,4 @@ for f in args.files:
         print(f"rmv3: error: '{f}' is not a valid file or directory")
         sys.exit(1)
 
-sys.exit(0)
+sys.exit(0)    # stop execution with success exit code
