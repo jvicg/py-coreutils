@@ -73,11 +73,13 @@ def create_dir(Dir, PROG_NAME):
 # method to look from a given file in a given dir
 def list_files(Dir, File='__show_all__'):
     # TODO: show message if Dir is empty
-    # TODO: format the returned files with the format: FILENAME removed at -> DATE
-    for root, dirs, files in os.walk(d):
+    for root, dirs, files in os.walk(Dir):
         for f in files:
-            if f in File or File == '__show_all__':
-                print(f'')
+            if File in f or File == '__show_all__':
+                # handle naming
+                tmp = f.rsplit('.trash')[0] # remove .trash extension
+                file_name, date = tmp.rsplit('%_%')
+                print(f'{file_name} removed at -> {date}')
 
 # method to recover file from trash dir
 def recover(Dir, File, verbose=False):
