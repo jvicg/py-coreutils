@@ -3,8 +3,6 @@
 # py-coreutils/recover.py
 # script to manage files in the TRASH
 
-# TODO: make --recover the default flag
-
 import os
 import sys
 import funcs                                  # file with local functions

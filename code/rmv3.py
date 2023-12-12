@@ -69,7 +69,7 @@ def main():
     trash_dir: str = args.trash_dir         # trash directory
 
     # process trash dir
-    funcs.create_dir(trash_dir, PROG_NAME)
+    funcs.mkdir(trash_dir, PROG_NAME)
 
     # execution of the program
     for f in args.files:

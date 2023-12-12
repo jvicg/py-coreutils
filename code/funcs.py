@@ -1,8 +1,6 @@
 # py-coreutils/funcs.py
 # file with funcs used in the rest of scripts
 
-# TODO: implement recover function
-
 import os
 import sys
 import subprocess
@@ -10,6 +8,11 @@ import subprocess
 # methods to print usage
 def print_mvv3_usage():
     print("USAGE: mvv3 --move | -m | --copy | -c SOURCE/s DESTINATION")
+
+# method to return all the files in a given dir
+def get_dir_files(Dir, File) -> list:
+    for root, dirs, files in os.walk(Dir):
+        return files
 
 # methods to get the size given file (will assume valid files/dirs are passed)
 def get_filesize(f) -> int:
@@ -58,7 +61,7 @@ def move(File, Dir, PROG_NAME, verbose=False):
         sys.exit(1)
 
 # method to create directories
-def create_dir(Dir, PROG_NAME):
+def mkdir(Dir, PROG_NAME):
     try:
         os.makedirs(Dir, exist_ok=True)    # create dir if doesn't exist
     except PermissionError:
@@ -69,11 +72,3 @@ def create_dir(Dir, PROG_NAME):
         print(f"{PROG_NAME}: error: {e}")
         sys.exit(1)
 
-# method to return all the files in a given dir
-def get_dir_files(Dir, File) -> list:
-    for root, dirs, files in os.walk(Dir):
-        return files
-
-# method to recover file from trash dir
-def recover(Dir, File, verbose=False):
-    pass
