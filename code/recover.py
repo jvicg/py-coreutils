@@ -21,12 +21,6 @@ def main():
         description=PROG_DEFINITION,
         epilog=PROG_EPILOG)
 
-    # arguments - flags
-    parser.add_argument(
-        '-v', '--verbose',
-        action='store_true',
-        help='show process on STDIN')
-
     # create exclusive group (so -r and -l can't be used together)
     exclusive_group = parser.add_mutually_exclusive_group()
 
@@ -51,7 +45,6 @@ def main():
     args = parser.parse_args()                # args object (type: Namespace)
     recover_mode: bool = args.recover         # recover mode
     list_mode: bool = args.list_files         # list_files mode
-    verbose: bool = args.verbose              # verbose mode
     arg_files: list = args.files              # files
 
     if not recover_mode and not list_mode: recover_mode=True # if no flag is given, recover mode will be use as default
