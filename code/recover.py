@@ -54,7 +54,7 @@ def main():
     verbose: bool = args.verbose              # verbose mode
     arg_files: list = args.files              # files
 
-    if (not recover_mode and not list_mode): recover_mode=True # if no flag is given, recover mode will be use as default
+    if not recover_mode and not list_mode: recover_mode=True # if no flag is given, recover mode will be use as default
 
     # if user didn't give arguments in recover mode, returns error
     if recover_mode and arg_files[0] == DEFAULT_FILE_VALUE:
