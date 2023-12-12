@@ -1,7 +1,11 @@
 # py-coreutils/funcs.py
 # file with funcs used in the rest of scripts
 
+# TODO: implement list_files function
+# TODO: implement recover function
+
 import os
+import sys
 import subprocess
 
 # methods to print usage
@@ -40,12 +44,41 @@ def run(command):
         print("ERROR:", e)
 
 # method to delete files
-def delete(f, verbose=False):
-    command = ["/bin/rm", "-rf"]
+def delete(File, PROG_NAME, verbose=False):
+    command = ["/bin/rm", "-rf", File]
     run(command)
-    if verbose: print(f"rmv3: deleting -> '{f}'")
+    if verbose: print(f"{PROG_NAME}: deleting -> '{File}'")
 
 # method to move files to trash
-def to_trash(f, trash_path, verbose=False):
-    os.rename(f, trash_path)
-    if verbose: print(f"rmv3: moving '{f}' -> {trash_path}")
+def move(File, Dir, PROG_NAME, verbose=False):
+    try:
+        os.rename(File, Dir)
+        if verbose: print(f"{PROG_NAME}: moving '{File}' -> {Dir}")
+    except PermissionError:
+        print(f"{PROG_NAME}: error: the user doesn't have enough permissions to create the directory '{Dir}'")
+        sys.exit(1)
+
+# method to create directories
+def create_dir(Dir, PROG_NAME):
+    try:
+        os.makedirs(Dir, exist_ok=True)    # create dir if doesn't exist
+    except PermissionError:
+        print(f"{PROG_NAME}: error: the user doesn't have enough permissions to create the directory '{Dir}'")
+        sys.exit(1)
+    except Exception as e:
+        print(f"{PROG_NAME}: error: there was a problem when trying to create the directory '{Dir}'")
+        print(f"{PROG_NAME}: error: {e}")
+        sys.exit(1)
+
+# method to look from a given file in a given dir
+def list_files(Dir, File='__show_all__'):
+    # TODO: show message if Dir is empty
+    # TODO: format the returned files with the format: FILENAME removed at -> DATE
+    for root, dirs, files in os.walk(d):
+        for f in files:
+            if f in File or File == '__show_all__':
+                print(f'')
+
+# method to recover file from trash dir
+def recover(Dir, File, verbose=False):
+    pass

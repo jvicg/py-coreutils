@@ -5,8 +5,8 @@
 
 import os
 import sys
-import funcs                                  # file with local functions
-import globvars                               # file that stores program global variables
+import funcs                                  # module with local functions
+import globvars                               # module that stores program global variables
 import argparse
 import subprocess
 from datetime import datetime
@@ -14,7 +14,7 @@ from datetime import datetime
 # handle file naming
 now = datetime.now()                          # start clock
 DATE = now.strftime("-%d-%b-%Y-%T")           # date as string
-TRASH_FORMAT = f"{DATE}.trash"                # add TRASH extension - format: {filename}-{date}.trash
+TRASH_FORMAT = f"{DATE}.trash"                # TRASH extension (will be appended to the name of removed files)
 
 # program definition
 PROG_NAME = "rmv3"
@@ -50,7 +50,7 @@ parser.add_argument(
 parser.add_argument(
     '--trash-dir',
     metavar='DIR',
-    default=os.path.join(globvars.HOME_DIR, ".trash"),
+    default=globvars.TRASH_DIR,
     help='directory where the removed files will be moved')
 
 # argument - files
@@ -68,25 +68,18 @@ delete: bool = args.delete              # delete flag
 trash_dir: str = args.trash_dir         # trash directory
 
 # process trash dir
-try:
-    os.makedirs(trash_dir, exist_ok=True)    # create trash dir if doesn't exist
-except PermissionError:
-    print(f"{PROG_NAME}: ERROR: the user doesnt have enough permissions to create the directory '{trash_dir}'")
-    sys.exit(1)
-except Exception as e:
-    print(f"{PROG_NAME}: ERROR: there was a problem when trying to create the directory '{trash_dir}'")
-    sys.exit(1)
+funcs.create_dir(trash_dir, PROG_NAME)
 
 # execution of the program
 for f in args.files:
     # files
     if os.path.isfile(f):
         if delete:
-            funcs.delete(f, verbose)
+            funcs.delete(f, PROG_NAME, verbose)
         else:
             f_basename = funcs.get_basename(f)
             destination = os.path.join(trash_dir, f_basename + TRASH_FORMAT)
-            funcs.to_trash(f, destination, verbose)
+            funcs.move(f, destination, PROG_NAME, verbose)
     # dirs
     elif os.path.isdir(f):
         if not recursive:
@@ -95,9 +88,9 @@ for f in args.files:
         elif not delete:
             dir_name = funcs.get_basename(f)
             destination = os.path.join(trash_dir, dir_name + TRASH_FORMAT)
-            funcs.to_trash(dir_name, destination, verbose)
+            funcs.move(dir_name, destination, PROG_NAME, verbose)
         else:
-            funcs.delete(f, verbose)
+            funcs.delete(f, PROG_NAME, verbose)
     # error handling
     else:
         print(f"{PROG_NAME}: error: '{f}' is not a valid file or directory")

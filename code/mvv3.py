@@ -46,11 +46,9 @@ else:
 
 # handle the rest of the arguments
 for arg in sys.argv[2:-1]:
-
     # strings with the pattern '-*' will be considered as flags
     if arg.startswith("-"):
         flags.append(arg)
-
     # check is args are valid files/dirs
     elif os.path.isfile(arg) or os.path.isdir(arg):
         # check file size
@@ -58,7 +56,6 @@ for arg in sys.argv[2:-1]:
             rsync_sources.append(arg)
         else:
             sources.append(arg)
-
     # error handling
     else:
         print(f'ERROR: {arg} is not a valid file or directory')
