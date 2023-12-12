@@ -4,7 +4,7 @@
 # script to remove files or move them to TRASH
 
 import os
-import sys
+import error                                  # module with display error functions
 import funcs                                  # module with local functions
 import globvars                               # module that stores program global variables
 import argparse
@@ -12,9 +12,9 @@ import subprocess
 from datetime import datetime
 
 # handle file naming
-now = datetime.now()                          # start clock
-DATE = now.strftime("%d-%b-%Y-%T")           # date as string
-TRASH_FORMAT = f"%_%{DATE}.trash"              # TRASH extension (will be appended to the name of removed files)
+now = datetime.now()                           # start clock
+DATE = now.strftime("%c")                      # date as string
+TRASH_FORMAT = globvars.FIELD_SEPARATOR+DATE   # TRASH extension (will be appended to the name of removed files)
 
 # program definition
 PROG_NAME = "rmv3"
@@ -74,7 +74,7 @@ def main():
     # execution of the program
     for f in args.files:
         # files
-        if os.path.isfile(f):
+        if os.path.isfile(f) or os.path.islink(f):
             if delete:
                 funcs.delete(f, PROG_NAME, verbose)
             else:
@@ -83,9 +83,7 @@ def main():
                 funcs.move(f, destination, PROG_NAME, verbose)
         # dirs
         elif os.path.isdir(f):
-            if not recursive:
-                print(f'{PROG_NAME}: error: {f} is a directory')
-                sys.exit(1)
+            if not recursive: error.is_dir(PROG_NAME, f)
             elif not delete:
                 dir_name = funcs.get_basename(f)
                 destination = os.path.join(trash_dir, dir_name + TRASH_FORMAT)
@@ -93,11 +91,9 @@ def main():
             else:
                 funcs.delete(f, PROG_NAME, verbose)
         # error handling
-        else:
-            print(f"{PROG_NAME}: error: '{f}' is not a valid file or directory")
-            sys.exit(1)
+        else: error.not_valid_file(PROG_NAME, f)
 
-    sys.exit(0)    # stop execution with success exit code
+    exit(0)    # stop execution with success exit code
 
 if __name__=='__main__':
     main()

@@ -2,7 +2,6 @@
 # file with funcs used in the rest of scripts
 
 import os
-import sys
 import subprocess
 
 # methods to print usage
@@ -58,7 +57,7 @@ def move(File, Dir, PROG_NAME, verbose=False):
         if verbose: print(f"{PROG_NAME}: moving '{File}' -> {Dir}")
     except PermissionError:
         print(f"{PROG_NAME}: error: the user doesn't have enough permissions to create the directory '{Dir}'")
-        sys.exit(1)
+        exit(1)
 
 # method to create directories
 def mkdir(Dir, PROG_NAME):
@@ -66,8 +65,8 @@ def mkdir(Dir, PROG_NAME):
         os.makedirs(Dir, exist_ok=True)    # create dir if doesn't exist
     except PermissionError:
         print(f"{PROG_NAME}: error: the user doesn't have enough permissions to create the directory '{Dir}'")
-        sys.exit(1)
+        exit(1)
     except Exception as e:
         print(f"{PROG_NAME}: error: there was a problem when trying to create the directory '{Dir}'")
         print(f"{PROG_NAME}: error: {e}")
-        sys.exit(1)
+        exit(1)

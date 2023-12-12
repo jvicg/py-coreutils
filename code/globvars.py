@@ -8,3 +8,4 @@ PROJECT_URL = "github.com/nrk19/py-coreutils"      # github repository
 HOME_DIR = os.path.expanduser('~')                 # home directory
 TRASH = ".trash"                                   # name of the trash directory (modify if u wish)
 TRASH_DIR = os.path.join(HOME_DIR, TRASH)          # trash path
+FIELD_SEPARATOR = "%%___%%"                        # used to separate name from date in trash files
