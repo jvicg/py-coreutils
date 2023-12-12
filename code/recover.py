@@ -53,11 +53,11 @@ def main():
     verbose: bool = args.verbose              # verbose mode
     arg_files: list = args.files              # files
 
-    if (not recover_mode and not list_mode): recover_mode = True # if no flag is given, recover mode will be use
+    if (not recover_mode and not list_mode): recover_mode=True # if no flag is given, recover mode will be use
 
-    # execution of the program
-    if len(os.listdir(globvars.TRASH_DIR)) == 0: # check if trash dir is empty
-        print(f'{PROG_NAME}: ERROR: TRASH DIR is empty')
+    # check if trash dir is empty
+    if len(os.listdir(globvars.TRASH_DIR)) == 0:
+        print(f'{PROG_NAME}: error: TRASH DIR is empty')
         sys.exit(1)
 
     # if user didn't give arguments in recover mode, returns error
@@ -65,7 +65,7 @@ def main():
         print(f'{PROG_NAME}: error: no arguments were given')
         sys.exit(1)
 
-    # main script loop
+    # main program loop
     for File in arg_files:
         trash_files = funcs.get_dir_files(globvars.TRASH_DIR, File)
         list_files = []
