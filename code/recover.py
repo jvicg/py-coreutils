@@ -5,14 +5,15 @@
 
 import os
 import sys
-import funcs                                  # file with local functions
-import globvars                               # file that stores program global variables
+import funcs                                  # module with local functions
+import globvars                               # module to store program global variables
 import argparse
 
 # program definition
 PROG_NAME = "recover"
 PROG_DEFINITION = f"{PROG_NAME} - program to manage files in the TRASH"
 PROG_EPILOG = f"{globvars.PROJECT_NAME}/{PROG_NAME} - script part of the repo: {globvars.PROJECT_URL}"
+DEFAULT_FILE_VALUE = "__show_all__"           # var will be used to list all files if no arguments are given
 
 def main():
     parser = argparse.ArgumentParser(
@@ -42,7 +43,7 @@ def main():
     parser.add_argument(
         'files',
         nargs="*",
-        default=["__show_all__"],
+        default=[DEFAULT_FILE_VALUE],
         metavar="FILE",
         help='files/dirs to be removed')
 
@@ -53,43 +54,47 @@ def main():
     verbose: bool = args.verbose              # verbose mode
     arg_files: list = args.files              # files
 
-    if (not recover_mode and not list_mode): recover_mode=True # if no flag is given, recover mode will be use
+    if (not recover_mode and not list_mode): recover_mode=True # if no flag is given, recover mode will be use as default
+
+    # if user didn't give arguments in recover mode, returns error
+    if recover_mode and arg_files[0] == DEFAULT_FILE_VALUE:
+        print(f'{PROG_NAME}: error: no arguments were given')
+        parser.print_help()
+        sys.exit(1)
 
     # check if trash dir is empty
     if len(os.listdir(globvars.TRASH_DIR)) == 0:
-        print(f'{PROG_NAME}: error: TRASH DIR is empty')
-        sys.exit(1)
-
-    # if user didn't give arguments in recover mode, returns error
-    if recover_mode and arg_files[0] == '__show_all__':
-        print(f'{PROG_NAME}: error: no arguments were given')
-        sys.exit(1)
+        print(f'{PROG_NAME}: info: TRASH DIR is empty')
+        sys.exit(0)
 
     # main program loop
     for File in arg_files:
         trash_files = funcs.get_dir_files(globvars.TRASH_DIR, File)
-        list_files = []
-        recover_files = []
+        list_files, recover_files = [], []
         for f in trash_files: # iterate over trash files
-            if File in f or File == '__show_all__':
-                # handle file naming
-                tmp = f.rsplit('.trash')[0]              # remove .trash extension
-                file_name, date = tmp.rsplit('%_%')      # split filename and date
-                # recover method
+            # handle file naming
+            tmp = f.rsplit('.trash')[0]              # remove .trash extension
+            file_name, date = tmp.rsplit('%_%')      # split filename and date
+            if File in file_name or File == DEFAULT_FILE_VALUE:
                 if recover_mode:
                     trash_file = os.path.join(globvars.TRASH_DIR, f)
-                    funcs.move(trash_file, file_name, PROG_NAME, True)
-                    recover_files.append(file_name)
-                # listing method
+                    recover_files.append((trash_file, file_name))
                 elif list_mode:
-                    list_files.append((file_name, date))     # append file to output list
-        # if not present return error
-        if (len(list_files) == 0 and list_mode) or (len(recover_files) == 0 and recover_mode):
+                    list_files.append((file_name, date))
+        # execution
+        if recover_mode and len(recover_files) > 0:
+            print(f'{PROG_NAME}: RECOVERING THE FILES:')
+            for trash_file, f in recover_files: funcs.move(trash_file, f, PROG_NAME, True)
+        elif list_mode and len(list_files) > 0:
+            print(f'{PROG_NAME}: LISTING FILES IN THE TRASH:')
+            for file_name, date in list_files:
+                pad_file_name = file_name.ljust(10, ' ')
+                print(f"{PROG_NAME}: file: {pad_file_name} removed at --> {date}")
+        # return error if no File is present in trash dir
+        else: 
             print(f"{PROG_NAME}: error: file: '{File}' was not found at TRASH DIR")
             sys.exit(1)
-        else:
-            for file_name, date in list_files:
-                print(f"{PROG_NAME}: file: '{file_name}' removed at -> {date}")
+
     sys.exit(0)
 
 if __name__ == '__main__':
