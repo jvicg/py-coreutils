@@ -4,15 +4,15 @@
 # script to remove files or move them to TRASH
 
 import os
-import error                                  # module with display error functions
-import funcs                                  # module with local functions
-import globvars                               # module that stores program global variables
 import argparse
 import subprocess
-from datetime import datetime
+import datetime
+import error               # module with display error functions
+import funcs               # module with local functions
+import globvars            # module to store program global variables
 
 # handle file naming
-now = datetime.now()                           # start clock
+now = datetime.datetime.now()                  # start clock
 DATE = now.strftime("%c")                      # date as string
 TRASH_FORMAT = globvars.FIELD_SEPARATOR+DATE   # TRASH extension (will be appended to the name of removed files)
 
@@ -61,6 +61,7 @@ def main():
         metavar="FILE",
         help='files/dirs to be removed')
 
+    # args variables
     args = parser.parse_args()              # arg object (type: Namespace)
     verbose: bool = args.verbose            # verbose flag
     recursive: bool = args.recursive        # recursive flag

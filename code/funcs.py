@@ -4,32 +4,10 @@
 import os
 import subprocess
 
-# methods to print usage
-def print_mvv3_usage():
-    print("USAGE: mvv3 --move | -m | --copy | -c SOURCE/s DESTINATION")
-
 # method to return all the files in a given dir
 def get_dir_files(Dir, File) -> list:
     for root, dirs, files in os.walk(Dir):
         return files
-
-# methods to get the size given file (will assume valid files/dirs are passed)
-def get_filesize(f) -> int:
-    return os.path.getsize(f)/(1024**2) # convert bytes to megabytes
-
-def get_dirsize(d) -> int:
-    dir_size = 0
-    for root, dirs, files in os.walk(d):
-        for f in files:
-            full_file_path = os.path.join(root, f)
-            dir_size += get_filesize(full_file_path)
-    return dir_size
-
-def get_size(f) -> int:
-    if os.path.isdir(f):
-        return get_dirsize(f)
-    elif os.path.isfile(f):
-        return get_filesize(f)
 
 # method to remove separator (/) from the end of a directory name and get basename instead of full path
 def get_basename(f) -> str:
