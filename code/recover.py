@@ -52,14 +52,38 @@ def main():
     recover: bool = args.recover              # recover mode
     list_files: bool = args.list_files        # list_files mode
     verbose: bool = args.verbose              # verbose mode
-    files: list = args.files                  # files
+    arg_files: list = args.files                  # files
 
     # execution of the program
-    for f in files:
-        if (not recover and not list_files) or recover:
-            funcs.recover(globvars.TRASH_DIR, f, verbose)
+    if len(os.listdir(globvars.TRASH_DIR)) == 0: # check if trash dir is empty
+        print(f'{PROG_NAME}: ERROR: TRASH DIR is empty')
+        sys.exit(1)
+
+    for File in arg_files:
+        trash_files = funcs.get_dir_files(globvars.TRASH_DIR, File)
+        list_files = []
+        recover_files = []
+        for f in trash_files: # iterate over trash files
+            if File in f or File == '__show_all__':
+                # handle file naming
+                tmp = f.rsplit('.trash')[0]              # remove .trash extension
+                file_name, date = tmp.rsplit('%_%')      # split filename and date
+                # recover method
+                if (not recover and not list_files) or recover:
+                    trash_file = os.path.join(globvars.TRASH_DIR, f)
+                    funcs.move(trash_file, file_name, PROG_NAME, True)
+                    recover_files.append(file_name)
+                # listing method
+                elif list_files:
+                    list_files.append((file_name, date))     # append file to output list
+        # if not present return error
+        if (len(list_files) == 0 and list_files) or (len(recover_files) == 0 and recover):
+            print(f'{PROG_NAME}: error: {File} was not found at TRASH DIR')
+            sys.exit(1)
         else:
-            funcs.list_files(globvars.TRASH_DIR, f)
+            for file_name, date in list_files:
+                print(f'{PROG_NAME}: {file_name} removed at -> {date}')
+    sys.exit(0)
 
 if __name__ == '__main__':
     main()

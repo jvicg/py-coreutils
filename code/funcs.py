@@ -1,7 +1,6 @@
 # py-coreutils/funcs.py
 # file with funcs used in the rest of scripts
 
-# TODO: implement list_files function
 # TODO: implement recover function
 
 import os
@@ -70,16 +69,10 @@ def create_dir(Dir, PROG_NAME):
         print(f"{PROG_NAME}: error: {e}")
         sys.exit(1)
 
-# method to look from a given file in a given dir
-def list_files(Dir, File='__show_all__'):
-    # TODO: show message if Dir is empty
+# method to return all the files in a given dir
+def get_dir_files(Dir, File) -> list:
     for root, dirs, files in os.walk(Dir):
-        for f in files:
-            if File in f or File == '__show_all__':
-                # handle naming
-                tmp = f.rsplit('.trash')[0] # remove .trash extension
-                file_name, date = tmp.rsplit('%_%')
-                print(f'{file_name} removed at -> {date}')
+        return files
 
 # method to recover file from trash dir
 def recover(Dir, File, verbose=False):
