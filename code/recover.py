@@ -5,6 +5,7 @@
 
 import os
 import argparse
+from itertools import zip_longest
 import error               # module with display error functions
 import funcs               # module with local functions
 import globvars            # module to store program global variables
@@ -61,17 +62,19 @@ def main():
 
     # main program loop
     for File in arg_files:
-        trash_files = funcs.get_dir_files(globvars.TRASH_DIR, File)
-        list_files, recover_files = [], []
-        for f in trash_files: # iterate over trash files
+        trash_files, trash_dirs = funcs.get_dir_files(globvars.TRASH_DIR, File)
+        list_files, list_dirs, recover_files = [], [], []
+        for f, d in zip_longest(trash_files, trash_dirs): # iterate over trash files
             # handle file naming
-            file_name, date = f.rsplit(globvars.FIELD_SEPARATOR)   # split filename and date
+            file_name, date = f.rsplit(globvars.FIELD_SEPARATOR)                # split filename and date
+            if d != None: dir_name, date = d.rsplit(globvars.FIELD_SEPARATOR)   # split dirname and date
             if File in file_name or File == DEFAULT_FILE_VALUE:
                 if recover_mode:
                     trash_file = os.path.join(globvars.TRASH_DIR, f)
                     recover_files.append((trash_file, file_name))
                 elif list_mode:
                     list_files.append((file_name, date))
+                    if d != None: list_dirs.append((dir_name, date))
         # execution
         if recover_mode and len(recover_files) > 0:
             print(f'{PROG_NAME}: RECOVERING FILES FROM TRASH DIR ({globvars.TRASH_DIR}):')
@@ -80,8 +83,8 @@ def main():
                 print(f"{PROG_NAME}: file --> '{f}' successfully recovered on working directory")
         elif list_mode and len(list_files) > 0:
             print(f'{PROG_NAME}: LISTING FILES IN TRASH DIR ({globvars.TRASH_DIR}):')
-            for file_name, date in list_files:
-                print(f"{PROG_NAME}: file --> '{file_name}' removed on {date}")
+            for file_name, date in list_files: print(f"{PROG_NAME}: file --> '{file_name}' removed on {date}")
+            for dir_name, date in list_dirs: print(f"{PROG_NAME}: directory --> '{dir_name}' removed on {date}")
         # return error if no File is present in trash dir
         else: error.file_not_found(PROG_NAME, File)
 

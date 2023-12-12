@@ -5,9 +5,9 @@ import os
 import subprocess
 
 # method to return all the files in a given dir
-def get_dir_files(Dir, File) -> list:
+def get_dir_files(Dir, File) -> tuple:
     for root, dirs, files in os.walk(Dir):
-        return files
+        return files, dirs
 
 # method to remove separator (/) from the end of a directory name and get basename instead of full path
 def get_basename(f) -> str:
