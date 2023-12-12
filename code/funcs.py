@@ -71,4 +71,3 @@ def mkdir(Dir, PROG_NAME):
         print(f"{PROG_NAME}: error: there was a problem when trying to create the directory '{Dir}'")
         print(f"{PROG_NAME}: error: {e}")
         sys.exit(1)
-
