@@ -15,7 +15,7 @@ positional arguments:
 `FILE - files/dirs to be removed`
 
 options:
-```bash
+```
 -h, --help       show this help message and exit
 -v, --verbose    show process on STDIN
 -r, --recursive  execute command recursively
@@ -34,7 +34,7 @@ positional arguments:
 
 options:
 
-``` sh
+```
 -h, --help        show this help message and exit
 -l, --list-files  look for FILE in trash dir - if not FILE is given it show all files
 -r, --recover     take files from trash directory to working directory. This is the default value
