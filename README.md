@@ -12,7 +12,7 @@ usage:
 
 
 positional arguments:
-`FILE             files/dirs to be removed`
+`FILE - files/dirs to be removed`
 
 options:
 ```bash
@@ -30,7 +30,7 @@ usage:
 `recover [-h] [-l | -r] [FILE ...]`
 
 positional arguments:
-`FILE              files/dirs to be removed`
+`FILE - files/dirs to be removed`
 
 options:
 
