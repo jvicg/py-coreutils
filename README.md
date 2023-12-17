@@ -1,7 +1,6 @@
 # py-coreutils
 
 A collection of python scripts to manage files. 
-
 - `rmv3`: remove files made safe - It will send files to the trash by default, instead of delete the files.
 - `recover.py`: it will bring a function to manage files in the trash, such as recover the file, list the files, etc.
 
@@ -33,10 +32,9 @@ positional arguments:
 `FILE - files/dirs to be removed`
 
 options:
-
 ```
 -h, --help        show this help message and exit
 -l, --list-files  look for FILE in trash dir - if not FILE is given it show all files
--r, --recover     take files from trash directory to working directory. This is the default value
+-r, --recover     take files from trash directory to working directory
 ```
 
