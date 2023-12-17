@@ -50,11 +50,10 @@ def main():
 
     # if no flag is given, recover mode will be use as default (recover -r)
     if not recover_mode and not list_mode: recover_mode=True
-    # if no flag and no arguments are given, program will list files in the trash (recover -l)
+    # if no flag and no arguments are given, program will print help
     if recover_mode and arg_files[0] == DEFAULT_FILE_VALUE:
-        list_mode=True
-        recover_mode=False
-
+        parser.print_help()
+        exit(0)
     # check if trash dir is empty
     if len(os.listdir(globvars.TRASH_DIR)) == 0:
         print(f'{PROG_NAME}: info: TRASH DIR is empty')
@@ -62,26 +61,26 @@ def main():
 
     # main program loop
     for File in arg_files:
-        trash_files, trash_dirs = funcs.get_dir_files(globvars.TRASH_DIR, File)
+        trash_files = funcs.get_dir_files(globvars.TRASH_DIR, File)
         list_files, list_dirs, recover_files = [], [], []
-        for f, d in zip_longest(trash_files, trash_dirs): # iterate over trash files
+        for f in trash_files: # iterate over trash files
             # handle file naming
-            file_name, date = f.rsplit(globvars.FIELD_SEPARATOR)                # split filename and date
-            if d != None: dir_name, date = d.rsplit(globvars.FIELD_SEPARATOR)   # split dirname and date
+            file_name, date = f.rsplit(globvars.FIELD_SEPARATOR) # split filename and date
             if File in file_name or File == DEFAULT_FILE_VALUE:
                 if recover_mode:
                     trash_file = os.path.join(globvars.TRASH_DIR, f)
                     recover_files.append((trash_file, file_name))
                 elif list_mode:
-                    list_files.append((file_name, date))
-                    if d != None: list_dirs.append((dir_name, date))
+                    file_full_path = os.path.join(globvars.TRASH_DIR, f)
+                    if os.path.isdir(file_full_path): list_dirs.append((file_name, date))
+                    else: list_files.append((file_name, date))
         # execution
         if recover_mode and len(recover_files) > 0:
             print(f'{PROG_NAME}: RECOVERING FILES FROM TRASH DIR ({globvars.TRASH_DIR}):')
             for trash_file, f in recover_files:
                 funcs.move(trash_file, f, PROG_NAME)
                 print(f"{PROG_NAME}: file --> '{f}' successfully recovered on working directory")
-        elif list_mode and len(list_files) > 0:
+        elif list_mode and (len(list_files) > 0 or len(list_dirs) > 0):
             print(f'{PROG_NAME}: LISTING FILES IN TRASH DIR ({globvars.TRASH_DIR}):')
             for file_name, date in list_files: print(f"{PROG_NAME}: file --> '{file_name}' removed on {date}")
             for dir_name, date in list_dirs: print(f"{PROG_NAME}: directory --> '{dir_name}' removed on {date}")
