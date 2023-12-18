@@ -88,7 +88,7 @@ def main():
             elif not delete:
                 dir_name = funcs.get_basename(f)
                 destination = os.path.join(trash_dir, dir_name + TRASH_FORMAT)
-                funcs.move(dir_name, destination, PROG_NAME, verbose)
+                funcs.move(f, destination, PROG_NAME, verbose)
             else:
                 funcs.delete(f, PROG_NAME, verbose)
         # error handling
