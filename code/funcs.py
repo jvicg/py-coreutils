@@ -25,10 +25,8 @@ def run(command):
 
 # method to delete files
 def delete(File, PROG_NAME, verbose=False):
-    command = ["/bin/rm", "-rf", File]
     if os.path.isdir(File): shutil.rmtree(File)
     else: os.remove(File)
-    run(command)
     if verbose: print(f"{PROG_NAME}: deleting -> '{File}'")
 
 # method to move files to trash
