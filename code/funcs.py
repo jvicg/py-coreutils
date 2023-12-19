@@ -2,6 +2,7 @@
 # file with funcs used in the rest of scripts
 
 import os
+import shutil
 import subprocess
 
 # method to return all the files in a given dir
@@ -25,13 +26,15 @@ def run(command):
 # method to delete files
 def delete(File, PROG_NAME, verbose=False):
     command = ["/bin/rm", "-rf", File]
+    if os.path.isdir(File): shutil.rmtree(File)
+    else: os.remove(File)
     run(command)
     if verbose: print(f"{PROG_NAME}: deleting -> '{File}'")
 
 # method to move files to trash
 def move(File, Dir, PROG_NAME, verbose=False):
     try:
-        os.rename(File, Dir)
+        shutil.move(File, Dir)
         if verbose: print(f"{PROG_NAME}: moving '{File}' -> {Dir}")
     except PermissionError:
         print(f"{PROG_NAME}: error: the user doesn't have enough permissions to create the directory '{Dir}'")
