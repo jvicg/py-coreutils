@@ -61,7 +61,7 @@ def main():
 
     # main program loop
     for File in arg_files:
-        trash_files = funcs.get_dir_files(globvars.TRASH_DIR, File)
+        trash_files = funcs.get_dir_files(globvars.TRASH_DIR)
         list_files, list_dirs, recover_files = [], [], []
         for f in trash_files: # iterate over trash files
             # handle file naming

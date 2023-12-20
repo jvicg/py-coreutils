@@ -6,7 +6,7 @@ import shutil
 import subprocess
 
 # method to return all the files in a given dir
-def get_dir_files(Dir, File) -> tuple:
+def get_dir_files(Dir) -> tuple:
     for root, dirs, files in os.walk(Dir):
         return files + dirs
 
@@ -14,28 +14,19 @@ def get_dir_files(Dir, File) -> tuple:
 def get_basename(f) -> str:
     return os.path.basename(f.rstrip(os.path.sep))
 
-# method to run a command - handling possible errors
-def run(command):
-    try:
-        subprocess.run(command, text=True, check=True)
-    except subprocess.CalledProcessError as e:
-        print("ERROR", e)
-    except Exception as e:
-        print("ERROR:", e)
-
 # method to delete files
-def delete(File, PROG_NAME, verbose=False):
+def delete(File, PROG_NAME=None, verbose=False):
     if os.path.isdir(File):
         try: shutil.rmtree(File)
         except Exception as e:
-            print("ERROR: ", )
+            print("ERROR: ", e)
     else:
         try: os.remove(File)
         except Exception as e:
             print("ERROR: ", e)
     if verbose: print(f"{PROG_NAME}: deleting -> '{File}'")
 
-# method to move files to trash
+# method to move files
 def move(File, Dir, PROG_NAME, verbose=False):
     try:
         shutil.move(File, Dir)

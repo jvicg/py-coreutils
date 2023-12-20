@@ -74,23 +74,14 @@ def main():
 
     # execution of the program
     for f in args.files:
-        # files
-        if os.path.isfile(f) or os.path.islink(f):
-            if delete:
-                funcs.delete(f, PROG_NAME, verbose)
+        # check if args are valid files
+        if os.path.isfile(f) or os.path.islink(f) or os.path.isdir(f):
+            if os.path.isdir(f) and not recursive: error.is_dir(PROG_NAME, f)
+            if delete or os.path.islink(f): funcs.delete(f, PROG_NAME, verbose)
             else:
                 f_basename = funcs.get_basename(f)
                 destination = os.path.join(trash_dir, f_basename + TRASH_FORMAT)
                 funcs.move(f, destination, PROG_NAME, verbose)
-        # dirs
-        elif os.path.isdir(f):
-            if not recursive: error.is_dir(PROG_NAME, f)
-            elif not delete:
-                dir_name = funcs.get_basename(f)
-                destination = os.path.join(trash_dir, dir_name + TRASH_FORMAT)
-                funcs.move(f, destination, PROG_NAME, verbose)
-            else:
-                funcs.delete(f, PROG_NAME, verbose)
         # error handling
         else: error.not_valid_file(PROG_NAME, f)
 
