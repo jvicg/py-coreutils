@@ -76,7 +76,7 @@ def main():
     for f in args.files:
         # check if args are valid files
         if os.path.isfile(f) or os.path.islink(f) or os.path.isdir(f):
-            if os.path.isdir(f) and not recursive: error.is_dir(PROG_NAME, f)
+            if os.path.isdir(f) and not recursive: error.is_dir(PROG_NAME, f) # throw an error if trying to remove a dir with no recursive flag
             if delete or os.path.islink(f): funcs.delete(f, PROG_NAME, verbose)
             else:
                 f_basename = funcs.get_basename(f)
