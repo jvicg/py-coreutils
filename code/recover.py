@@ -5,7 +5,6 @@
 
 import os
 import argparse
-from itertools import zip_longest
 import error               # module with display error functions
 import funcs               # module with local functions
 import globvars            # module to store program global variables
@@ -82,8 +81,8 @@ def main():
                 print(f"{PROG_NAME}: file --> '{f}' successfully recovered on working directory")
         elif list_mode and (len(list_files) > 0 or len(list_dirs) > 0):
             print(f'{PROG_NAME}: LISTING FILES IN TRASH DIR ({globvars.TRASH_DIR}):')
-            for file_name, date in list_files: print(f"{PROG_NAME}: file --> '{file_name}' removed on {date}")
             for dir_name, date in list_dirs: print(f"{PROG_NAME}: directory --> '{dir_name}' removed on {date}")
+            for file_name, date in list_files: print(f"{PROG_NAME}: file --> '{file_name}' removed on {date}")
         # return error if no File is present in trash dir
         else: error.file_not_found(PROG_NAME, File)
 

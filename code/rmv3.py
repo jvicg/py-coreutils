@@ -68,12 +68,13 @@ def main():
     force: bool = args.force                # force flag
     delete: bool = args.delete              # delete flag
     trash_dir: str = args.trash_dir         # trash directory
+    files: list = args.files                # files to process
 
     # process trash dir
     funcs.mkdir(trash_dir, PROG_NAME)
 
     # execution of the program
-    for f in args.files:
+    for f in files:
         # check if args are valid files
         if os.path.isfile(f) or os.path.islink(f) or os.path.isdir(f):
             if os.path.isdir(f) and not recursive: error.is_dir(PROG_NAME, f) # throw an error if trying to remove a dir with no recursive flag
