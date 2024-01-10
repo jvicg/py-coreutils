@@ -68,17 +68,16 @@ def main():
     force: bool = args.force                # force flag
     delete: bool = args.delete              # delete flag
     trash_dir: str = args.trash_dir         # trash directory
-    files: list = args.files                # files to process
 
     # process trash dir
     funcs.mkdir(trash_dir, PROG_NAME)
 
     # execution of the program
-    for f in files:
-        # check if args are valid files
-        if os.path.isfile(f) or os.path.islink(f) or os.path.isdir(f):
+    for f in args.files:
+        if os.path.islink(f): funcs.delete(f, PROG_NAME, verbose)  # if arg is a symlink we throw it away
+        elif os.path.isfile(f) or os.path.isdir(f):
             if os.path.isdir(f) and not recursive: error.is_dir(PROG_NAME, f) # throw an error if trying to remove a dir with no recursive flag
-            if delete or os.path.islink(f): funcs.delete(f, PROG_NAME, verbose)
+            if delete: funcs.delete(f, PROG_NAME, verbose)
             else:
                 f_basename = funcs.get_basename(f)
                 destination = os.path.join(trash_dir, f_basename + TRASH_FORMAT)

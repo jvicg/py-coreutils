@@ -16,7 +16,8 @@ def get_basename(f) -> str:
 
 # method to delete files
 def delete(File, PROG_NAME=None, verbose=False):
-    if os.path.isdir(File):
+    if os.path.islink(File): os.remove(File)
+    elif os.path.isdir(File):
         try: shutil.rmtree(File)
         except Exception as e:
             print("ERROR: ", e)
